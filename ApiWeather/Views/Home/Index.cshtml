@@ -1,0 +1,73 @@
+﻿@model ApiWeather.Models.PronosticoCiudad
+
+@{
+    ViewBag.Title = "Obtener Temperatura";
+
+}
+
+<h2>Ingrese Ciudad/País:</h2>
+
+
+@using (Html.BeginForm("ObtenerTemperatura", "Home", FormMethod.Post))
+{
+    <div class="form-group d-inline align-content-center">
+
+        @Html.EditorFor(model => model.nombreCiudad, new { htmlAttributes = new { @class = "form-control d-inline" } })
+        @Html.ValidationMessageFor(model => model.nombreCiudad, "", new { @class = "text-danger" })
+
+
+    </div>
+    <button type="submit" class="btn btn-primary d-inline">Obtener Temperatura</button>
+
+}
+
+
+@if (ViewBag.Temperatura != null && ViewBag.Temperatura.forecast != null)
+{
+
+    <div class="bg-dark text-light m-2 text-center">
+
+        <h3>@Model.nombreCiudad</h3>
+
+    </div>
+    <div class="card m-2 text-center">
+        <img class="card-img-top mx-auto" style="width:8rem; text-align:center; height:auto" src="@ViewBag.Temperatura.forecast.forecastday[0].day.condition.icon" />
+        <h3>Temperatura Actual: @ViewBag.Temperatura.current.temp_c°C</h3>
+
+    </div>
+    <div class="card m-2 text-center">
+        <h3>Humedad: @ViewBag.Temperatura.current.humidity% </h3>
+    </div>
+    <div class="card m-2 text-center">
+        <h3>Probabilidad de lluvias: @ViewBag.Temperatura.forecast.forecastday[0].day.daily_chance_of_rain%</h3>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <h2 class="mt-4">Proximos 5 dias:</h2>
+            @for (int i = 1; i <= 5; i++)
+            {
+                var fechaFormateada = ((DateTime)@ViewBag.Temperatura.forecast.forecastday[i].date).ToString("dd/MM");
+                <div class="card" style="padding: 1rem; height: 100% ;width:13rem ;margin:10px">
+                    <div class="card-body">
+                        <img class="card-img-top" style="width:8rem; height:auto" src="@ViewBag.Temperatura.forecast.forecastday[i].day.condition.icon" />
+                        <h3 class="card-title mt-2" style="text-align:center ">@fechaFormateada</h3>
+                        <h3 class="card-text">Min: @ViewBag.Temperatura.forecast.forecastday[i].day.mintemp_c°C</h3>
+                        <h3 class="card-text">Max: @ViewBag.Temperatura.forecast.forecastday[i].day.maxtemp_c°C</h3>
+
+                    </div>
+                </div>
+            }
+
+
+
+        </div>
+
+    </div>
+
+}
+else
+{
+    <p>No se encontraron datos de temperatura.</p>
+}
+
